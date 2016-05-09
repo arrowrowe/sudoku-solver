@@ -1,0 +1,46 @@
+#!/usr/bin/env python
+
+# A very basic backtracking algorithm.
+# Almost exactly copied from here:
+#   http://stackoverflow.com/questions/1697334/algorithm-for-solving-sudoku
+
+def findNextCellToFill(m, i, j):
+  for x in xrange(i, 9):
+    for y in xrange(j, 9):
+      if m[x][y] == 0:
+        return x, y
+  for x in xrange(9):
+    for y in xrange(i):
+      if m[x][y] == 0:
+        return x, y
+  return -1, -1
+
+def isValid(m, i, j, e):
+  for x in xrange(9):
+    if m[i][x] == e or m[x][j] == e:
+      return False
+  secTopX, secTopY = i / 3 * 3, j / 3 * 3
+  for x in xrange(secTopX, secTopX + 3):
+    for y in xrange(secTopY, secTopY + 3):
+      if m[x][y] == e:
+        return False
+  return True
+
+def solveSudoku(m, i=0, j=0):
+  i, j = findNextCellToFill(m, i, j)
+  if i == -1:
+    return True
+  for e in xrange(1, 10):
+    if isValid(m, i, j, e):
+      m[i][j] = e
+      if solveSudoku(m, i, j):
+        return True
+      m[i][j] = 0
+  return False
+
+solve = lambda m: m if solveSudoku(m) else None
+
+read = lambda : [map(int, raw_input()) for _ in xrange(9)]
+stringify = lambda m: 'NO' if m is None else '\n'.join(''.join(map(str, line)) for line in m)
+
+print stringify(solve(read()))

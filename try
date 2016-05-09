@@ -1,0 +1,5 @@
+#!/bin/bash
+
+app=$1
+index=${2:-'0'}
+diff <(cat sample/$index.in | $app/app) sample/$index.out
